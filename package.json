@@ -1,0 +1,20 @@
+{
+  "name": "teelm-site",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "teelm dev",
+    "build": "teelm build",
+    "gen": "teelm gen"
+  },
+  "dependencies": {
+    "teelm": "latest"
+  },
+  "devDependencies": {
+    "vite": "^6",
+    "typescript": "^6",
+    "tailwindcss": "^4",
+    "@tailwindcss/vite": "^4"
+  }
+}

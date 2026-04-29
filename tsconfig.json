@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "DOM",
+      "ESNext"
+    ],
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "teelm",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": true
+  },
+  "include": [
+    "src"
+  ]
+}
