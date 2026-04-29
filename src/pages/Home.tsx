@@ -122,7 +122,7 @@ export const page: PageConfig<Model, Msg, Shared, {}> = {
             aria-label="Teelm home"
             class="flex items-center gap-3 rounded-full py-1 pl-1 pr-3 font-black tracking-[-0.04em]"
           >
-            <img src="public/logo_vector.svg" class="h-12" alt="Teelm logo" />
+            <img src="/logo_vector.svg" class="h-12" alt="Teelm logo" />
             <span class="text-2xl max-sm:hidden">teelm</span>
           </a>
 
@@ -145,7 +145,7 @@ export const page: PageConfig<Model, Msg, Shared, {}> = {
             class="rounded-full border border-white/15 px-3 py-3 text-sm font-black bg-[#F6F3EB] max-sm:px-3 max-sm:py-2 max-sm:text-xs"
             href="https://github.com/the-man-with-a-golden-mind/teelm"
           >
-            <img src="public/github-logo.png" class="w-6 bg-white h-6"> </img>
+            <img src="/github-logo.png" class="w-6 bg-white h-6"> </img>
           </a>
         </header>
 

@@ -63,12 +63,9 @@ export const page: PageConfig<Model, Msg, Shared, {}> = {
           aria-label="Teelm home"
           class="flex items-center gap-3 rounded-full py-1 pl-1 pr-3 font-black tracking-[-0.04em]"
         >
-          <span class="grid h-10 w-10 place-items-center rounded-full bg-[#CCFF00] text-2xl font-black leading-none text-black">
-            t
-          </span>
+          <img src="/logo_vector.svg" class="h-12" alt="Teelm logo" />
           <span class="text-2xl max-sm:hidden">teelm</span>
         </a>
-
         <nav
           aria-label="Docs navigation"
           class="flex items-center gap-1 rounded-full border border-white/15 bg-white/[0.04] p-1 max-md:hidden"
