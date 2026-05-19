@@ -13,6 +13,7 @@ const sections = [
   { label: "Query params", href: "#query-params" },
   { label: "Links", href: "#links" },
   { label: "Guards", href: "#guards" },
+  { label: "Route data", href: "#route-data" },
   { label: "Generated router", href: "#generated-router" },
 ] as const;
 
@@ -31,12 +32,12 @@ const fileRoutes = [
 ] as const;
 
 const addExamples = [
-  ["teelm add About --jsx", "src/pages/About.tsx", "/about"],
-  ["teelm add users/[id] --jsx", "src/pages/users/[id].tsx", "/users/:id"],
-  ["teelm add users/[id:int] --jsx", "src/pages/users/[id:int].tsx", "/users/:id as number"],
-  ["teelm add users/[id:float] --jsx", "src/pages/users/[id:float].tsx", "/users/:id as number"],
-  ["teelm add users/[id]/Edit --jsx", "src/pages/users/[id]/Edit.tsx", "/users/:id/edit"],
-  ["teelm add Blog/Index --jsx", "src/pages/Blog/Index.tsx", "/blog"],
+  ["bunx teelm add About --jsx", "src/pages/About.tsx", "/about"],
+  ["bunx teelm add users/[id] --jsx", "src/pages/users/[id].tsx", "/users/:id"],
+  ["bunx teelm add users/[id:int] --jsx", "src/pages/users/[id:int].tsx", "/users/:id as number"],
+  ["bunx teelm add users/[id:float] --jsx", "src/pages/users/[id:float].tsx", "/users/:id as number"],
+  ["bunx teelm add users/[id]/Edit --jsx", "src/pages/users/[id]/Edit.tsx", "/users/:id/edit"],
+  ["bunx teelm add Blog/Index --jsx", "src/pages/Blog/Index.tsx", "/blog"],
 ] as const;
 
 const routingParts = [
@@ -44,6 +45,7 @@ const routingParts = [
   ["Route", "The URL pattern generated from the page file name."],
   ["Params", "Typed values parsed from dynamic URL segments."],
   ["Shared", "App-wide state passed into every page."],
+  ["Route data", "Page-owned loaders, actions and cache invalidation hooks."],
   ["Generated router", "Route table produced by teelm gen. Do not edit by hand."],
   ["routerLink", "Anchor helper for SPA navigation."],
 ] as const;
@@ -116,12 +118,12 @@ export const page: PageConfig<Model, Msg, Shared, {}> = {
         <article class="min-w-0">
           <section class="rounded-[2.5rem] border border-white/15 bg-[#0D0D0F]/95 p-[clamp(24px,5vw,56px)] shadow-2xl shadow-black/50 max-sm:rounded-[2rem]">
             <h1 class="max-w-5xl text-[clamp(3rem,9vw,6rem)] font-black leading-[0.9] tracking-[-0.07em] lg:text-8xl">
-              Routes come from files.
+              Pages define routes and own their data.
             </h1>
 
             <p class="mt-6 max-w-3xl text-xl leading-relaxed text-[#A7A29A] max-sm:text-base">
-              Teelm generates a typed router from page files. Add files under
-              <code> src/pages</code>, run <code>teelm gen</code>, and keep routing disposable.
+              Teelm generates a typed router from page files. Keep URLs, params, loaders
+              and actions close to the page that owns them.
             </p>
           </section>
 
@@ -168,13 +170,12 @@ export const page: PageConfig<Model, Msg, Shared, {}> = {
 
             <DocSection id="add-pages" num="03" title="Add pages">
               <p>
-                Use <code>teelm add</code> to create a page file. Then run
-                <code> teelm gen</code> to regenerate the router.
+                Use <code>teelm add</code> to create a page file. The CLI writes the file
+                and regenerates the router for you.
               </p>
 
               <CodeBlock
-                code={`teelm add users/[id:int] --jsx
-teelm gen`}
+                code={`bunx teelm add users/[id:int] --jsx`}
               />
 
               <div class="overflow-hidden rounded-[1.5rem] border border-white/15 bg-[#0D0D0F]/90">
@@ -344,13 +345,87 @@ page(route("/admin"), adminPage, {
               </div>
             </DocSection>
 
-            <DocSection id="generated-router" num="08" title="Generated router">
+            <DocSection id="route-data" num="08" title="Route data">
+              <p>
+                In Teelm 0.2.0, a page can own its read and write flow directly.
+                Use <code>loader</code> for route-scoped reads, <code>action</code> for
+                route-scoped writes, and let the router handle refresh and cache invalidation.
+              </p>
+
+              <CodeBlock
+                code={`export const page: PageConfig<Model, Msg, Shared, Params> = {
+  init: (params) => noFx({
+    projectId: params.id,
+    project: null,
+    saving: false,
+  }),
+
+  loader: async (params, shared) => {
+    const response = await fetch(\`/api/projects/\\${params.id}?org=\\${shared.orgId}\`);
+    return await response.json();
+  },
+
+  load: (model, data) => noFx({
+    ...model,
+    project: data,
+  }),
+
+  action: async (input, model, params) => {
+    await fetch(\`/api/projects/\\${params.id}\`, {
+      method: "PATCH",
+      body: JSON.stringify(input),
+    });
+
+    return noFx({
+      ...model,
+      saving: false,
+    });
+  },
+};`}
+              />
+
+              <p>
+                Trigger writes through the active router, then refresh or invalidate what changed.
+              </p>
+
+              <CodeBlock
+                code={`router.submit({ name: model.name });
+router.revalidate();
+router.invalidate("projects");`}
+                compact
+              />
+
+              <div class="grid grid-cols-2 gap-4 max-md:grid-cols-1">
+                <FlatNote
+                  title="loader"
+                  body="Fetch route-owned data after init or load without pushing that orchestration into view code."
+                  code="loader(params, shared)"
+                />
+                <FlatNote
+                  title="action"
+                  body="Handle route-owned mutations through the page protocol instead of ad hoc effect plumbing."
+                  code="action(input, model, params, shared)"
+                />
+                <FlatNote
+                  title="revalidate"
+                  body="Ask the active page to rerun its loader after a write or shared-state change."
+                  code="router.revalidate()"
+                />
+                <FlatNote
+                  title="invalidate"
+                  body="Drop cached pages by tag when a mutation makes older route state stale."
+                  code='router.invalidate("projects")'
+                />
+              </div>
+            </DocSection>
+
+            <DocSection id="generated-router" num="09" title="Generated router">
               <p>
                 <code>teelm gen</code> scans <code>src/pages</code> and regenerates
                 <code>src/generated/router.ts</code>. Do not edit that file manually.
               </p>
 
-              <CodeBlock code={`teelm gen`} />
+              <CodeBlock code={`bunx teelm gen`} />
 
               <p>
                 Generated routing sorts static routes before dynamic routes, then prefers

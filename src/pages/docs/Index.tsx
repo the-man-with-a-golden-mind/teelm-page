@@ -27,7 +27,7 @@ const docsSections = [
   {
     title: "Routing",
     href: "/docs/routing",
-    description: "File-based pages, typed params, guards and generated routes.",
+    description: "File-based pages, typed params, loaders, actions and generated routes.",
     tag: "Pages",
   },
   {
@@ -208,26 +208,26 @@ export const page: PageConfig<Model, Msg, Shared, {}> = {
                 Quick start
               </p>
               <h2 class="text-[clamp(2.4rem,6vw,4.5rem)] font-black leading-[0.9] tracking-[-0.075em]">
-                Create pages. Generate routes. Keep moving.
+                Scaffold once. Let routing stay disposable.
               </h2>
               <p class="mt-5 max-w-2xl text-lg leading-relaxed text-[#A7A29A] max-sm:text-base">
-                teelm’s CLI keeps routing disposable: edit page files, run generation,
-                and let the framework wire the route table.
+                teelm&apos;s CLI wires the route table from your page files. Add a page,
+                run the app, and keep route generation out of your way.
               </p>
             </div>
 
             <div class="overflow-hidden rounded-[1.75rem] border border-white/15 bg-[#070708] font-mono text-sm shadow-2xl shadow-black/50">
               <p class="border-b border-white/10 px-5 py-4">
-                <span class="text-[#CCFF00]">$</span> teelm new my-app --jsx
+                <span class="text-[#CCFF00]">$</span> bunx teelm new my-app --jsx
               </p>
               <p class="border-b border-white/10 px-5 py-4">
-                <span class="text-[#CCFF00]">$</span> teelm add docs/Index --jsx
+                <span class="text-[#CCFF00]">$</span> cd my-app
               </p>
               <p class="border-b border-white/10 px-5 py-4">
-                <span class="text-[#CCFF00]">$</span> teelm gen
+                <span class="text-[#CCFF00]">$</span> bun install
               </p>
               <p class="px-5 py-4">
-                <span class="text-[#CCFF00]">$</span> teelm dev
+                <span class="text-[#CCFF00]">$</span> bunx teelm dev
               </p>
             </div>
           </div>

@@ -30,11 +30,11 @@ const generatedFiles = [
 ] as const;
 
 const pageExamples = [
-  ["teelm add About --jsx", "src/pages/About.tsx", "/about"],
-  ["teelm add users/[id] --jsx", "src/pages/users/[id].tsx", "/users/:id"],
-  ["teelm add users/[id:int] --jsx", "src/pages/users/[id:int].tsx", "/users/:id as number"],
-  ["teelm add users/[id]/Edit --jsx", "src/pages/users/[id]/Edit.tsx", "/users/:id/edit"],
-  ["teelm add Blog/Index --jsx", "src/pages/Blog/Index.tsx", "/blog"],
+  ["bunx teelm add About --jsx", "src/pages/About.tsx", "/about"],
+  ["bunx teelm add users/[id] --jsx", "src/pages/users/[id].tsx", "/users/:id"],
+  ["bunx teelm add users/[id:int] --jsx", "src/pages/users/[id:int].tsx", "/users/:id as number"],
+  ["bunx teelm add users/[id]/Edit --jsx", "src/pages/users/[id]/Edit.tsx", "/users/:id/edit"],
+  ["bunx teelm add Blog/Index --jsx", "src/pages/Blog/Index.tsx", "/blog"],
 ] as const;
 
 export const page: PageConfig<Model, Msg, Shared, {}> = {
@@ -109,53 +109,55 @@ export const page: PageConfig<Model, Msg, Shared, {}> = {
           <section class="rounded-[2.5rem] border border-white/15 bg-[#0D0D0F]/95 p-[clamp(24px,5vw,56px)] shadow-2xl shadow-black/50 max-sm:rounded-[2rem]">
 
             <h1 class="max-w-5xl text-[clamp(3rem,9vw,6rem)] font-black leading-[0.9] tracking-[-0.07em] lg:text-8xl">
-              Install teelm and ship your first page.
+              Start fast. Keep the loop honest.
             </h1>
 
             <p class="mt-6 max-w-3xl text-xl leading-relaxed text-[#A7A29A] max-sm:text-base">
-              Install the CLI, generate a project, see what gets created, run the dev server,
-              add pages, then learn the one-loop architecture behind teelm.
+              Scaffold a project, inspect the generated files, run the dev server,
+              add pages, then learn the TypeScript loop behind teelm.
             </p>
           </section>
 
           <div class="mt-8 grid gap-8">
             <DocSection id="install" num="01" title="Install Teelm">
               <p>
-                Install the <code>teelm</code> CLI globally, then use it to scaffold,
-                generate and run projects.
+                Use the CLI through a package runner. That keeps the command version aligned
+                with the project you are creating.
               </p>
 
               <div class="grid grid-cols-2 gap-4 max-md:grid-cols-1">
-                <CommandLine label="npm" command="npm install -g teelm" />
-                <CommandLine label="bun" command="bun add -g teelm" />
+                <CommandLine label="bunx" command="bunx teelm new my-app --jsx" />
+                <CommandLine label="npx" command="npx teelm new my-app --jsx" />
               </div>
 
               <p>
-                After install, the <code>teelm</code> command should be available in your terminal.
+                Global install is optional. For most projects, <code>bunx</code> or <code>npx</code>
+                is the cleaner default.
               </p>
             </DocSection>
 
             <DocSection id="create-project" num="02" title="Create a new project">
               <p>
                 Use <code>teelm new</code> to scaffold a fresh app. Add <code>--jsx</code>
-                when you want page files to use Teelm’s JSX runtime.
+                when you want page files to use Teelm&apos;s JSX runtime.
               </p>
 
               <CodeBlock
-                code={`teelm new my-app --jsx
-cd my-app`}
+                code={`bunx teelm new my-app --jsx
+cd my-app
+bun install`}
               />
 
               <div class="grid grid-cols-2 gap-4 max-md:grid-cols-1">
                 <FlatNote
                   title="Without JSX"
                   body="Use h(...) manually in your views."
-                  code="teelm new my-app"
+                  code="bunx teelm new my-app"
                 />
                 <FlatNote
                   title="With JSX"
                   body="Use .tsx pages and JSX syntax."
-                  code="teelm new my-app --jsx"
+                  code="bunx teelm new my-app --jsx"
                 />
               </div>
             </DocSection>
@@ -182,7 +184,8 @@ cd my-app`}
 
               <p>
                 <code>src/generated/router.ts</code> is generated. Do not edit it by hand.
-                Edit page files under <code>src/pages</code>, then run <code>teelm gen</code>.
+                Edit page files under <code>src/pages</code> and let <code>teelm add</code>,
+                <code>teelm dev</code> or <code>teelm build</code> keep it in sync.
               </p>
             </DocSection>
 
@@ -191,24 +194,23 @@ cd my-app`}
                 <code>teelm dev</code> regenerates routes first, then starts Vite.
               </p>
 
-              <CodeBlock code={`teelm dev`} />
+              <CodeBlock code={`bunx teelm dev`} />
 
               <p>
                 For production builds, use:
               </p>
 
-              <CodeBlock code={`teelm build`} compact />
+              <CodeBlock code={`bunx teelm build`} compact />
             </DocSection>
 
             <DocSection id="add-pages" num="05" title="Add more pages">
               <p>
                 Use <code>teelm add</code> to create a page under <code>src/pages</code>.
-                Then run <code>teelm gen</code> to refresh the generated router.
+                It writes the file and regenerates the router in one step.
               </p>
 
               <CodeBlock
-                code={`teelm add docs/Introduction --jsx
-teelm gen`}
+                code={`bunx teelm add docs/Introduction --jsx`}
               />
 
               <div class="overflow-hidden  ">

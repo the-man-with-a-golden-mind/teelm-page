@@ -20,7 +20,7 @@ const exportsList = [
   ["teelm", "Core app, VNode helpers, noFx, withFx, Cmd/Sub helpers and types."],
   ["teelm/fx", "HTTP, delay, navigation, storage, logging and dispatch effects."],
   ["teelm/subs", "Intervals, keyboard, mouse, resize, URL, animation frame and websocket subscriptions."],
-  ["teelm/router", "Route definitions, typed parsers, PageConfig, routerApp and routerLink."],
+  ["teelm/router", "Route definitions, typed parsers, PageConfig, routerApp, routerLink and route data APIs."],
   ["teelm/functional", "Result, Maybe, Decode, HttpError, branded URL/path primitives and pipe."],
   ["teelm/task", "Composable lazy async work with Task.attempt and Task.perform."],
   ["teelm/events", "Typed DOM event helpers through makeEvents."],
@@ -308,7 +308,8 @@ function subscriptions(model: Model): Subs<Msg> {
               <p>
                 Router APIs live under <code>teelm/router</code>. You can use the generated
                 router from <code>teelm gen</code>, or define routes manually with
-                <code> route</code> and <code>page</code>.
+                <code> route</code> and <code>page</code>. In 0.2.0, the router also owns
+                route-level reads, writes and cache invalidation.
               </p>
 
               <CodeBlock
@@ -339,9 +340,19 @@ routerApp({
                   code='<a {...routerLink("/docs")}>'
                 />
                 <FlatNote
+                  title="Loaders and actions"
+                  body="Pages can own reads and writes through loader(), action() and router.submit()."
+                  code="loader / action / submit"
+                />
+                <FlatNote
                   title="Guards"
                   body="Allow with true or redirect with a URL string."
                   code='isAdmin ? true : "/login"'
+                />
+                <FlatNote
+                  title="Revalidation"
+                  body="Refresh the active page or invalidate tagged cache entries after a mutation."
+                  code="router.revalidate()"
                 />
               </div>
             </DocSection>

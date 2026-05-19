@@ -66,22 +66,25 @@ function update(state: State, msg: Msg) {
   },
   router: {
     eyebrow: "Router",
-    title: "File pages with typed params.",
+    title: "File pages with route-owned data.",
     file: "src/pages/users/[id:int].tsx",
     code: `import { noFx } from "teelm";
 import type { PageConfig } from "teelm/router";
 import type { Shared } from "../shared";
 
-type Model = { id: number };
+type User = { name: string };
+type Model = { id: number; user: User | null };
 type Msg = never;
 type Params = { id: number };
 
 export const page: PageConfig<Model, Msg, Shared, Params> = {
-  init: (params) => noFx({ id: params.id }),
+  init: (params) => noFx({ id: params.id, user: null }),
+  loader: async (params) => fetch("/api/users/" + params.id).then((r) => r.json()),
+  load: (model, user) => noFx({ ...model, user }),
   update: (model) => noFx(model),
   view: (model) => (
     <section>
-      <p>User #{model.id}</p>
+      <p>{model.user?.name ?? ("User #" + model.id)}</p>
     </section>
   ),
 };`,
@@ -93,7 +96,7 @@ const features = [
   ["02", "Zero runtime deps", "Tiny framework gravity. Bun runtime, Vite bundler, TypeScript strict mode."],
   ["03", "Branded Cmd/Sub", "Effects and subscriptions are constructed through public helpers, not loose tuples."],
   ["04", "Decoder boundaries", "HTTP and storage decode on entry and return Result, so failure states stay explicit."],
-  ["05", "Typed routing", "File pages, typed params, cached models, guards and lifecycle hooks."],
+  ["05", "Typed routing", "File pages, typed params, loaders, actions, invalidation and lifecycle hooks."],
   ["06", "Debuggable state", "Deep-freeze by default, history support and a time-travel debugger overlay."],
 ] as const;
 
@@ -168,7 +171,7 @@ export const page: PageConfig<Model, Msg, Shared, {}> = {
                 <ul class="mt-5 grid grid-cols-2 gap-x-4 gap-y-2 text-[14px] font-bold text-[#A7A29A] max-sm:grid-cols-1">
                   {[
                     "branded effects",
-                    "typed routing",
+                    "route loaders/actions",
                     "decoder-safe IO",
                     "deep-frozen state",
                     "time-travel debugger",
@@ -214,7 +217,7 @@ export const page: PageConfig<Model, Msg, Shared, {}> = {
             <SectionHeading
               kicker="Why Teelm"
               title="Framework constraints that make big apps calmer."
-              body="Teelm gives every interaction the same shape: update state, describe effects, render again. The result is UI code that is easier to trace, test and refactor."
+              body="Teelm gives every interaction the same shape: update state, describe effects, render again. In 0.2.0, routing also owns page reads, writes and refresh semantics."
             />
 
             <div class="grid grid-cols-3 gap-4 max-lg:grid-cols-1">
